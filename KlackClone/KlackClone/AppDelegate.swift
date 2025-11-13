@@ -20,6 +20,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private var uiAgent: UIAgent!
     private var randomizationAgent: RandomizationAgent!
     private var profileManagerAgent: ProfileManagerAgent!
+    private var keyboardShortcutAgent: KeyboardShortcutAgent!
 
     // MARK: - Application Lifecycle
 
@@ -89,6 +90,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             audioPlayback: audioPlaybackAgent,
             keyboardMonitor: keyboardMonitorAgent
         )
+
+        // 9. Keyboard Shortcut Agent
+        keyboardShortcutAgent = KeyboardShortcutAgent(settings: settingsAgent)
 
         print("✅ All agents initialized")
     }

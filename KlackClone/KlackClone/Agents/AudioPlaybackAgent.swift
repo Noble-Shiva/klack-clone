@@ -20,6 +20,7 @@ class AudioPlaybackAgent {
     private let settings: SettingsAgent
 
     private var playerNodes: [AVAudioPlayerNode] = []
+    private var pitchNodes: [AVAudioUnitTimePitch] = []
     private let maxConcurrentSounds = 20 // Maximum simultaneous sounds
 
     // MARK: - Initialization
@@ -47,12 +48,20 @@ class AudioPlaybackAgent {
     private func setupAudioEngine() {
         // Configure for low latency
         do {
-            // Create player nodes pool
+            // Create player nodes pool with pitch shifters
             for _ in 0..<maxConcurrentSounds {
                 let playerNode = AVAudioPlayerNode()
+                let pitchNode = AVAudioUnitTimePitch()
+
                 audioEngine.attach(playerNode)
-                audioEngine.connect(playerNode, to: mixer, format: nil)
+                audioEngine.attach(pitchNode)
+
+                // Connect: PlayerNode -> PitchNode -> Mixer
+                audioEngine.connect(playerNode, to: pitchNode, format: nil)
+                audioEngine.connect(pitchNode, to: mixer, format: nil)
+
                 playerNodes.append(playerNode)
+                pitchNodes.append(pitchNode)
             }
 
             // Set output volume
@@ -61,7 +70,7 @@ class AudioPlaybackAgent {
             // Start the engine
             try audioEngine.start()
 
-            print("✅ Audio engine started with \(maxConcurrentSounds) player nodes")
+            print("✅ Audio engine started with \(maxConcurrentSounds) player nodes + pitch shifters")
 
         } catch {
             print("❌ Failed to start audio engine: \(error)")
@@ -90,23 +99,28 @@ class AudioPlaybackAgent {
 
     private func playSound(buffer: AVAudioPCMBuffer) {
         // Find available player node
-        guard let playerNode = getAvailablePlayerNode() else {
+        guard let index = getAvailablePlayerNodeIndex() else {
             print("⚠️  No available player nodes")
             return
         }
 
-        // Get pitch variation
-        let pitchShift = randomization.getPitchVariation()
+        let playerNode = playerNodes[index]
+        let pitchNode = pitchNodes[index]
+
+        // Get pitch variation (returns value like 0.95 to 1.05)
+        let pitchVariation = randomization.getPitchVariation()
+
+        // Convert to cents for AVAudioUnitTimePitch
+        // 1 semitone = 100 cents
+        // 5% variation = approximately ±86 cents
+        let pitchCents = (pitchVariation - 1.0) * 1200.0 // Convert ratio to cents
+
+        // Apply pitch shift
+        pitchNode.pitch = pitchCents
 
         // Schedule buffer
         playerNode.scheduleBuffer(buffer) {
             // Buffer finished playing
-        }
-
-        // Apply pitch shift if needed
-        if abs(pitchShift) > 0.001 {
-            // Note: For MVP, we skip pitch shifting to reduce complexity
-            // Will add AVAudioUnitTimePitch in Phase 3
         }
 
         // Start playback if not already playing
@@ -115,16 +129,16 @@ class AudioPlaybackAgent {
         }
     }
 
-    private func getAvailablePlayerNode() -> AVAudioPlayerNode? {
+    private func getAvailablePlayerNodeIndex() -> Int? {
         // Find first non-playing node
-        for node in playerNodes {
+        for (index, node) in playerNodes.enumerated() {
             if !node.isPlaying {
-                return node
+                return index
             }
         }
 
         // All nodes busy, return first one anyway (will interrupt)
-        return playerNodes.first
+        return 0
     }
 
     // MARK: - Volume Control

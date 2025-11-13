@@ -14,8 +14,6 @@ class ProfileManagerAgent {
     private let audioLibrary: AudioLibraryAgent
     private let settings: SettingsAgent
 
-    private var availableProfiles: [String] = ["Default"]
-
     var currentProfile: String {
         settings.selectedProfile
     }
@@ -35,11 +33,11 @@ class ProfileManagerAgent {
     // MARK: - Profile Management
 
     func getAvailableProfiles() -> [String] {
-        return availableProfiles
+        return audioLibrary.getAvailableProfiles()
     }
 
     func switchProfile(to name: String) {
-        guard availableProfiles.contains(name) else {
+        guard getAvailableProfiles().contains(name) else {
             print("⚠️  Profile not found: \(name)")
             return
         }

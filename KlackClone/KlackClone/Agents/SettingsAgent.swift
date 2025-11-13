@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import ServiceManagement
 
 class SettingsAgent {
 
@@ -83,9 +84,36 @@ class SettingsAgent {
     // MARK: - Launch at Startup
 
     private func configureLaunchAtStartup(enabled: Bool) {
-        // Note: This requires LSSharedFileList or LoginItems API
-        // For MVP, we'll add this in Phase 3
-        print("⚙️  Launch at startup: \(enabled) (not yet implemented)")
+        // For macOS 13+, use SMAppService
+        if #available(macOS 13.0, *) {
+            do {
+                let service = SMAppService.mainApp
+                if enabled {
+                    if service.status == .notRegistered {
+                        try service.register()
+                        print("✅ Launch at startup enabled")
+                    }
+                } else {
+                    if service.status == .enabled {
+                        try service.unregister()
+                        print("✅ Launch at startup disabled")
+                    }
+                }
+            } catch {
+                print("❌ Failed to configure launch at startup: \(error)")
+            }
+        } else {
+            // Fallback for older macOS versions
+            // Use SMLoginItemSetEnabled (deprecated but still works on macOS 11-12)
+            let bundleIdentifier = Bundle.main.bundleIdentifier ?? "com.klackclone.KlackClone"
+            let success = SMLoginItemSetEnabled(bundleIdentifier as CFString, enabled)
+
+            if success {
+                print("✅ Launch at startup \(enabled ? "enabled" : "disabled")")
+            } else {
+                print("❌ Failed to configure launch at startup")
+            }
+        }
     }
 
     // MARK: - Reset

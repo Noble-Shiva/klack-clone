@@ -33,18 +33,19 @@
 - 🔊 **Volume Control** - Adjust sound levels to your preference
 - 🎚️ **Multiple Profiles** - Switch between different mechanical switch types
 
-### Keyboard Profiles (Planned)
-- 🔵 Cherry MX Blue (Clicky)
-- 🟤 Cherry MX Brown (Tactile)
-- 🔴 Cherry MX Red (Linear)
-- 🟡 Gateron Milky Yellow
-- 🧈 NovelKeys Cream
+### Keyboard Profiles
+- 🔵 **Cherry MX Blue** - Clicky switch with high-pitched tactile click
+- 🟤 **Cherry MX Brown** - Tactile switch with medium bump sound
+- 🔴 **Cherry MX Red** - Linear switch with smooth, low-pitched sound
+- 🟡 **Gateron Milky Yellow** - Deep, smooth linear switch
+- 🧈 **NovelKeys Cream** - Creamy, bass-heavy sound
+- ⚙️ **Default** - Balanced general-purpose sound
 
 ### User Experience
 - 📍 **Menu Bar App** - Unobtrusive, always accessible
-- ⚡ **Quick Toggle** - Keyboard shortcut to enable/disable instantly
-- 🎛️ **Settings Panel** - Customize your experience
-- 🚀 **Launch at Startup** - Start automatically with macOS
+- ⚡ **Quick Toggle** - Global hotkey (⌘⇧K) to enable/disable instantly
+- 🎚️ **Profile Selector** - Easy switching between keyboard types
+- 🚀 **Launch at Startup** - Optional auto-start with macOS
 - 🔒 **Privacy First** - Zero data collection, completely offline
 
 ---
@@ -109,11 +110,11 @@ Klack Clone is built with a modular agent-based architecture:
 - [x] Single sound profile implementation
 
 ### Phase 3: Enhanced Experience ✨
-- [ ] Multiple sound profiles
-- [x] Pitch randomization
-- [ ] Settings window
-- [ ] Keyboard shortcuts
-- [ ] Launch at startup
+- [x] Multiple sound profiles (6 profiles: Default, Cherry MX Blue/Brown/Red, Gateron Yellow, NovelKeys Cream)
+- [x] Pitch randomization with AVAudioUnitTimePitch
+- [x] Settings persistence and management
+- [x] Global keyboard shortcuts (⌘⇧K)
+- [x] Launch at startup option
 
 ### Phase 4: Polish & Optimization 💎
 - [ ] Performance optimization

@@ -88,11 +88,20 @@ class UIAgent: NSObject {
 
         menu.addItem(NSMenuItem.separator())
 
-        // Profile selection (coming in Phase 2)
-        let profileItem = NSMenuItem()
-        profileItem.title = "Profile: Default"
-        profileItem.isEnabled = false
-        menu.addItem(profileItem)
+        // Profile selection
+        createProfileMenu()
+
+        menu.addItem(NSMenuItem.separator())
+
+        // Launch at Startup
+        let launchAtStartupItem = NSMenuItem(
+            title: "Launch at Startup",
+            action: #selector(toggleLaunchAtStartup),
+            keyEquivalent: ""
+        )
+        launchAtStartupItem.target = self
+        launchAtStartupItem.state = settings.launchAtStartup ? .on : .off
+        menu.addItem(launchAtStartupItem)
 
         menu.addItem(NSMenuItem.separator())
 
@@ -146,6 +155,13 @@ class UIAgent: NSObject {
         print("🎨 Volume changed to \(Int(newVolume))%")
     }
 
+    @objc private func toggleLaunchAtStartup(_ sender: NSMenuItem) {
+        settings.launchAtStartup.toggle()
+        sender.state = settings.launchAtStartup ? .on : .off
+
+        print("🎨 Launch at startup \(settings.launchAtStartup ? "enabled" : "disabled")")
+    }
+
     @objc private func showAbout() {
         let alert = NSAlert()
         alert.messageText = "KlackClone"
@@ -165,6 +181,50 @@ class UIAgent: NSObject {
 
     @objc private func quit() {
         NSApplication.shared.terminate(nil)
+    }
+
+    // MARK: - Profile Menu
+
+    private func createProfileMenu() {
+        let profileMenuItem = NSMenuItem()
+        profileMenuItem.title = "Sound Profile"
+
+        let profileSubmenu = NSMenu()
+
+        // Get all available profiles
+        let profiles = profileManager.getAvailableProfiles()
+        let currentProfile = profileManager.currentProfile
+
+        for profileName in profiles {
+            let item = NSMenuItem(
+                title: profileName,
+                action: #selector(profileSelected(_:)),
+                keyEquivalent: ""
+            )
+            item.target = self
+            item.representedObject = profileName
+            item.state = (profileName == currentProfile) ? .on : .off
+            profileSubmenu.addItem(item)
+        }
+
+        profileMenuItem.submenu = profileSubmenu
+        menu.addItem(profileMenuItem)
+    }
+
+    @objc private func profileSelected(_ sender: NSMenuItem) {
+        guard let profileName = sender.representedObject as? String else { return }
+
+        profileManager.switchProfile(to: profileName)
+
+        // Update checkmarks
+        if let profileMenu = sender.menu {
+            for item in profileMenu.items {
+                item.state = .off
+            }
+            sender.state = .on
+        }
+
+        print("🎨 Profile selected: \(profileName)")
     }
 
     // MARK: - UI Updates

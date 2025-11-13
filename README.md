@@ -33,18 +33,19 @@
 - 🔊 **Volume Control** - Adjust sound levels to your preference
 - 🎚️ **Multiple Profiles** - Switch between different mechanical switch types
 
-### Keyboard Profiles (Planned)
-- 🔵 Cherry MX Blue (Clicky)
-- 🟤 Cherry MX Brown (Tactile)
-- 🔴 Cherry MX Red (Linear)
-- 🟡 Gateron Milky Yellow
-- 🧈 NovelKeys Cream
+### Keyboard Profiles
+- 🔵 **Cherry MX Blue** - Clicky switch with high-pitched tactile click
+- 🟤 **Cherry MX Brown** - Tactile switch with medium bump sound
+- 🔴 **Cherry MX Red** - Linear switch with smooth, low-pitched sound
+- 🟡 **Gateron Milky Yellow** - Deep, smooth linear switch
+- 🧈 **NovelKeys Cream** - Creamy, bass-heavy sound
+- ⚙️ **Default** - Balanced general-purpose sound
 
 ### User Experience
 - 📍 **Menu Bar App** - Unobtrusive, always accessible
-- ⚡ **Quick Toggle** - Keyboard shortcut to enable/disable instantly
-- 🎛️ **Settings Panel** - Customize your experience
-- 🚀 **Launch at Startup** - Start automatically with macOS
+- ⚡ **Quick Toggle** - Global hotkey (⌘⇧K) to enable/disable instantly
+- 🎚️ **Profile Selector** - Easy switching between keyboard types
+- 🚀 **Launch at Startup** - Optional auto-start with macOS
 - 🔒 **Privacy First** - Zero data collection, completely offline
 
 ---
@@ -95,25 +96,25 @@ Klack Clone is built with a modular agent-based architecture:
 
 ### Phase 1: Foundation (MVP) 🏗️
 - [x] Project planning and architecture design
-- [ ] Basic project setup and structure
-- [ ] Global keyboard event monitoring
-- [ ] Simple audio playback
-- [ ] Menu bar presence with toggle
-- [ ] Accessibility permissions flow
+- [x] Basic project setup and structure
+- [x] Global keyboard event monitoring
+- [x] Simple audio playback
+- [x] Menu bar presence with toggle
+- [x] Accessibility permissions flow
 
 ### Phase 2: Core Features 🎵
-- [ ] Complete audio engine with zero-lag playback
-- [ ] Key-to-sound mapping system
-- [ ] Press/release event handling
-- [ ] Volume controls
-- [ ] Single sound profile implementation
+- [x] Complete audio engine with zero-lag playback
+- [x] Key-to-sound mapping system
+- [x] Press/release event handling
+- [x] Volume controls
+- [x] Single sound profile implementation
 
 ### Phase 3: Enhanced Experience ✨
-- [ ] Multiple sound profiles
-- [ ] Pitch randomization
-- [ ] Settings window
-- [ ] Keyboard shortcuts
-- [ ] Launch at startup
+- [x] Multiple sound profiles (6 profiles: Default, Cherry MX Blue/Brown/Red, Gateron Yellow, NovelKeys Cream)
+- [x] Pitch randomization with AVAudioUnitTimePitch
+- [x] Settings persistence and management
+- [x] Global keyboard shortcuts (⌘⇧K)
+- [x] Launch at startup option
 
 ### Phase 4: Polish & Optimization 💎
 - [ ] Performance optimization
@@ -128,7 +129,27 @@ Klack Clone is built with a modular agent-based architecture:
 
 - **macOS**: 11.0 (Big Sur) or later
 - **Xcode**: 15.0+ (for building from source)
+- **Swift**: 5.9+
 - **Permissions**: Accessibility (Input Monitoring)
+
+## 🔨 Building from Source
+
+Detailed build instructions are available in [KlackClone/README_BUILD.md](KlackClone/README_BUILD.md).
+
+**Quick Start:**
+```bash
+cd KlackClone
+swift package generate-xcodeproj
+open KlackClone.xcodeproj
+# Build and run with ⌘+R
+```
+
+Or build via command line:
+```bash
+cd KlackClone
+swift build -c release
+.build/release/KlackClone
+```
 
 ---
 
@@ -161,12 +182,16 @@ git clone https://github.com/Noble-Shiva/klack-clone.git
 cd klack-clone
 ```
 
-2. Open the project in Xcode *(coming soon)*
+2. Open the project in Xcode
 ```bash
+cd KlackClone
+swift package generate-xcodeproj
 open KlackClone.xcodeproj
 ```
 
 3. Build and run (⌘+R)
+
+See [KlackClone/README_BUILD.md](KlackClone/README_BUILD.md) for detailed build instructions.
 
 ---
 
